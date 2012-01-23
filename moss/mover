@@ -21,7 +21,7 @@ dump = rdir + 'moss/mdump/'
 
 c = 0
 t = 0
-for num in ('52218', '52226', '52227', '52228', '52229'):
+for num in ('52745', '52750', '52755' , '52759', '52760', '52765', '52766'):
     cdir = rdir + num + '/' + assi 
     for _, dirs, _ in os.walk(cdir):
         for dname in dirs:
