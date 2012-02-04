@@ -12,6 +12,34 @@ import sys
 keeplist = ['Inigo.py']
 pushlist = []
 
+
+# Walk into directories in filesystem
+# Ripped from os module and slightly modified
+# for alphabetical sorting
+def sortedWalk(top, topdown=True, onerror=None):
+    from os.path import join, isdir, islink
+
+    names = os.listdir(top)
+    names.sort()
+    dirs, nondirs = [], []
+
+    for name in names:
+        if isdir(os.path.join(top, name)):
+            dirs.append(name)
+        else:
+            nondirs.append(name)
+
+    if topdown:
+        yield top, dirs, nondirs
+    for name in dirs:
+        path = join(top, name)
+        if not os.path.islink(path):
+            for x in sortedWalk(path, topdown, onerror):
+                yield x
+    if not topdown:
+        yield top, dirs, nondirs
+
+
 # delete everything except files listed in keeplist, so it's easier to
 # see what we care about in the directory. keep in mind, files turned in
 # with the wrong name will be deleted (just locally, of course)
@@ -55,7 +83,7 @@ def writeit(d, files, fgrades):
 # grade/comment file)
 def setup_grade_file(splitDirectory, grader, wantedList=None):
     with open('./grades.txt', 'w') as fgrades:
-        for d, _, files in os.walk('./'):
+        for d, _, files in sortedWalk('./'):
             if d is not './':
                 if splitDirectory:
                     if grader in ('seth',):
