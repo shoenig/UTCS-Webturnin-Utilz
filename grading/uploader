@@ -17,11 +17,11 @@ def login(usrnm, passwd):
         '-d \"username=' + usrnm + '\" ' + \
         '-d \"password=' + passwd + '\" ' + \
         '--insecure ' + \
-        '"https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/do_login"'
+        '''"https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/do_login
+"'''
 
     print 'cmd: %s' % cmd
-    k = os.system(cmd)
-    print 'k: %d' % k
+    os.system(cmd)
 
 # return a random happy comment
 # def happy_comment():
@@ -45,21 +45,26 @@ def slurp_grades():
 url = 'https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll'
 def upload_comments(u, p, c, a):
     for record in slurp_grades():
+        if record[1] in ('',): # skip people with no comments
+            continue
         # make an A#.txt file in /tmp for every comment file
         with open('/tmp/A' + a + '.txt', 'w') as tempf:
             print record
             print >>tempf, record[1]
             # magical upload part
-            cmd = 'curl -F \"class=' + c + '\" ' + \
+            cmd = 'curl -F \"class=' + c + '.GRADER' + '\" ' + \
                 '-F \"user=' + record[0] + '\" ' + \
-                '-F \"file=/tmp/A' + a + '.txt;filename=A' + a + '.txt '+ \
+                '-F \"file=/tmp/A' + a + '.txt;filename=A' + a + '.txt'+ '\" ' \
                 '--insecure ' + \
                 '-b cookies.txt -c cookies.txt ' + \
                 '\"' + url + '\" '
+            print ''
+            print ''
             print cmd + '\n'
-                
+            os.system(cmd)
+
 
 if __name__ == '__main__':
     u, p, c, a = get_login_info()
     login(u, p)
-#    upload_comments(u, p, c, a)
+    upload_comments(u, p, c, a)
