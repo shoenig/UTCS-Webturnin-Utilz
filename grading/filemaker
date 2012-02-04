@@ -9,8 +9,8 @@ import os
 import shutil
 import sys
 
-keeplist = ['a.py']
-pushlist = ['key.txt']
+keeplist = ['Inigo.py']
+pushlist = []
 
 # delete everything except files listed in keeplist, so it's easier to
 # see what we care about in the directory. keep in mind, files turned in
@@ -26,12 +26,13 @@ def purge():
 # create a copy of each file in pushlist in each students directory
 # for example, a common test case file, or data file
 def push():
-    cdir = './'
-    for _, dirs, _ in os.walk(cdir):
-        for dname in dirs:
-            for item in pushlist:
-                target = cdir + dname + '/' + item
-                shutil.copy2('./' + item, target)
+    if len(pushlist) > 0:
+        cdir = './'
+        for _, dirs, _ in os.walk(cdir):
+            for dname in dirs:
+                for item in pushlist:
+                    target = cdir + dname + '/' + item
+                    shutil.copy2('./' + item, target)
 
 # actually write things to the file
 def writeit(d, files, fgrades):
