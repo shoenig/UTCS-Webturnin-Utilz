@@ -17,7 +17,7 @@ pushlist = []
 # Ripped from os module and slightly modified
 # for alphabetical sorting
 def sortedWalk(top, topdown=True, onerror=None):
-    from os.path import join, isdir, islink
+    from os.path import join, isdir
 
     names = os.listdir(top)
     names.sort()
@@ -62,20 +62,36 @@ def push():
                     target = cdir + dname + '/' + item
                     shutil.copy2('./' + item, target)
 
+def pluckid(d, fname):
+    with open(d+'/'+fname) as pyfile:
+        for line in pyfile.readlines():
+            line = line.strip()
+            trailer = ''
+            for x in line.split():
+                if 'EID' in trailer:
+                    return x
+                trailer = x
+    return 'MISSING-EID'
+
 # actually write things to the file
 def writeit(d, files, fgrades):
     missing = []
+    eid = 'NO-FILE'
     for item in keeplist:
         if item not in files:
             missing.append(item)
-    filler = ((' ' * (15 - len(d))))
+        elif item.endswith('.py'):
+            eid = pluckid(d, item)
+    login_filler = ((' ' * (15 - len(d))))
+    eid_filler = ((' ' * (15 - len(eid))))
+
     if missing:
         message = 'Missing File[s]: %s' % str(missing)
-        print >>fgrades, '00/20   %s %s %s' % \
-            (str(d)[2:], filler, message)
+        print >>fgrades, '00/20   %s  %s %s %s %s' % \
+            (str(d)[2:], login_filler, eid, eid_filler, message)
     else:
-        print >>fgrades, '##/20   %s %s ' % \
-            (str(d)[2:], filler)
+        print >>fgrades, '##/20   %s  %s %s %s ' % \
+            (str(d)[2:], login_filler, eid, eid_filler)
 
 # grab all the user names from the folders, and put them in a text file
 # with other info. if the user does not have one or more of the files
