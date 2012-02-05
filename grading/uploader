@@ -42,7 +42,7 @@ def slurp_grades():
             records.append( (account, comment) )
         return records
 
-url = 'https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll'
+url = 'https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/upload'
 def upload_comments(u, p, c, a):
     for record in slurp_grades():
         if record[1] in ('',): # skip people with no comments
