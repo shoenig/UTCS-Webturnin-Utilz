@@ -17,8 +17,8 @@ def login(usrnm, passwd):
         '-d \"username=' + usrnm + '\" ' + \
         '-d \"password=' + passwd + '\" ' + \
         '--insecure ' + \
-        '''"https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/do_login
-"'''
+        '-H "Expect:" ' + \
+        '''"https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/do_login"'''
 
     print 'cmd: %s' % cmd
     os.system(cmd)
@@ -49,15 +49,16 @@ def upload_comments(u, p, c, a):
             continue
         # make an A#.txt file in /tmp for every comment file
         with open('/tmp/A' + a + '.txt', 'w') as tempf:
-            print record
+#            print record
             print >>tempf, record[1]
             # magical upload part
-            cmd = 'curl -F \"class=' + c + '.GRADER' + '\" ' + \
+            cmd = 'curl -F "class=' + c  + '.GRADER' + '" ' + \
                 '-F \"user=' + record[0] + '\" ' + \
-                '-F \"file=/tmp/A' + a + '.txt;filename=A' + a + '.txt'+ '\" ' \
+                '-F \"file=@/tmp/A' + a + '.txt;filename=A'+ a + '.txt\" ' \
                 '--insecure ' + \
+                '-H "Expect:" ' + \
                 '-b cookies.txt -c cookies.txt ' + \
-                '\"' + url + '\" '
+                '--url \"' + url + '\" '
             print ''
             print ''
             print cmd + '\n'

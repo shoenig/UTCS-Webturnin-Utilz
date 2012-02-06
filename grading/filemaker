@@ -69,7 +69,7 @@ def pluckid(d, fname):
             trailer = ''
             for x in line.split():
                 if 'EID' in trailer:
-                    return x
+                    return x.lower()
                 trailer = x
     return 'MISSING-EID'
 
