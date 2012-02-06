@@ -23,9 +23,10 @@ def sort(recs, byeid=False):
         return sorted(recs, key=lambda rec: rec[0])
     
 def print_records(records):
-    for r in records:
-        formatted = format_record(r[0], r[1], r[2], r[3], r[4])
-        print formatted
+    with open('grades.txt', 'w') as gradesf:
+        for r in records:
+            formatted = format_record(r[0], r[1], r[2], r[3], r[4])
+            print >>gradesf, formatted
             
 
 # program begins here

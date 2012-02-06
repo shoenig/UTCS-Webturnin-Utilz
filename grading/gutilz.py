@@ -18,8 +18,6 @@ def format_record(utcs, eid, missing_files, cmt='', grd=''):
 
     if missing_files:
         cmt = 'Missing File[s]: %s' % str(missing_files)
-        return '%s   %s  %s %s %s %s' % \
-            (grd, utcs, utcs_filler, eid, eid_filler, cmt)
-    else:
-        return '%s   %s  %s %s %s %s' % \
-            (grd, utcs, utcs_filler, eid, eid_filler, cmt)
+
+    return '%s   %s  %s %s %s %s' % \
+        (grd, utcs, utcs_filler, eid, eid_filler, cmt)
