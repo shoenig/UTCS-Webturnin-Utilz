@@ -36,9 +36,7 @@ def slurp_grades():
         for line in gradesf.readlines():
             sp = line.split()
             account = sp[1]
-            # you could replace '' with happy_comment()
-            comment = '' if len(sp) < 3 else \
-                reduce(lambda x,y: x+y, sp[2:]) # && cat /dev/lololol
+            comment = join_comment(sp)
             records.append( (account, comment) )
         return records
 

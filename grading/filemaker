@@ -8,6 +8,7 @@
 import os
 import shutil
 import sys
+from gutilz import format_record
 
 keeplist = ['Inigo.py']
 pushlist = []
@@ -82,16 +83,9 @@ def writeit(d, files, fgrades):
             missing.append(item)
         elif item.endswith('.py'):
             eid = pluckid(d, item)
-    login_filler = ((' ' * (15 - len(d))))
-    eid_filler = ((' ' * (15 - len(eid))))
+    formatted = format_record(str(d)[2:], eid, missing)
+    print >>fgrades, formatted
 
-    if missing:
-        message = 'Missing File[s]: %s' % str(missing)
-        print >>fgrades, '00/20   %s  %s %s %s %s' % \
-            (str(d)[2:], login_filler, eid, eid_filler, message)
-    else:
-        print >>fgrades, '##/20   %s  %s %s %s ' % \
-            (str(d)[2:], login_filler, eid, eid_filler)
 
 # grab all the user names from the folders, and put them in a text file
 # with other info. if the user does not have one or more of the files

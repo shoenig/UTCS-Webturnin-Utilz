@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+# sort a grades.txt file either by utied or utcs username
+import sys
+from gutilz import format_record
+from gutilz import join_comment
+
+def getrecs():
+    records = []
+    with open('grades.txt', 'r') as gradesf:
+        for line in gradesf.readlines():
+            sp = line.strip().split()
+            grd = sp[0]
+            utcs = sp[1]
+            eid = sp[2]
+            cmt = join_comment(sp)
+            records.append( (utcs, eid, '', cmt, grd) )
+    return records
+
+def sort(recs, byeid=False):
+    if byeid:
+        return sorted(recs, key=lambda rec: rec[1])
+    else: # by utcs login
+        return sorted(recs, key=lambda rec: rec[0])
+    
+def print_records(records):
+    for r in records:
+        formatted = format_record(r[0], r[1], r[2], r[3], r[4])
+        print formatted
+            
+
+# program begins here
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print 'usage: resort <eid/utcs>'
+        sys.exit(1)
+    if sys.argv[1] not in ('eid', 'utcs'):
+        print 'invalid option: %s, must be `eid` or `utcs`' % sys.argv[1]
+        sys.exit(1)
+
+    r = getrecs()
+    r = sort(r, byeid=True) if sys.argv[1] in ('eid',) else sort(r)
+    print_records(r)
