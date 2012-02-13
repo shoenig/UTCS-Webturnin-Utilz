@@ -4,6 +4,9 @@
 
 import os
 import random
+from gutilz import join_comment
+
+url = 'https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/upload'
 
 def get_login_info():
     usrnm = raw_input('UTCS Username: ')
@@ -40,14 +43,19 @@ def slurp_grades():
             records.append( (account, comment) )
         return records
 
-url = 'https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/upload'
+
+
+# THIS IS BROKEN :'(
+# Webturnin does not provide any error messages at this point, so I think
+# the files are technically getting uploaded, but not into the actual
+# user directories
 def upload_comments(u, p, c, a):
     for record in slurp_grades():
         if record[1] in ('',): # skip people with no comments
             continue
         # make an A#.txt file in /tmp for every comment file
         with open('/tmp/A' + a + '.txt', 'w') as tempf:
-#            print record
+            # print record
             print >>tempf, record[1]
             # magical upload part
             cmd = 'curl -F "class=' + c  + '.GRADER' + '" ' + \
@@ -62,8 +70,20 @@ def upload_comments(u, p, c, a):
             print cmd + '\n'
             os.system(cmd)
 
+# instead of uploading to Webturnin, just create the comment files
+# with utcs-usernames appended to them
+def create_comment_files(assignment):
+    for record in slurp_grades():
+        if record[1] in ('',): # skip people with no comments
+            continue
+        # make utcs-A#.txt file
+        fname = record[0] + '-A' + assignment + '.txt'
+        with open('/tmp/'+fname, 'w') as tempf:
+            print >>tempf, record[1]
 
 if __name__ == '__main__':
-    u, p, c, a = get_login_info()
-    login(u, p)
-    upload_comments(u, p, c, a)
+    #u, p, c, a = get_login_info()
+    #login(u, p)
+    #upload_comments(u, p, c, a)
+    assi = raw_input('Assignemnt #: ')
+    create_comment_files(assi)

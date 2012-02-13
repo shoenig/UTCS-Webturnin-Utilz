@@ -10,7 +10,7 @@ import shutil
 import sys
 from gutilz import format_record
 
-keeplist = ['Inigo.py']
+keeplist = ['EasterSunday.py']
 pushlist = []
 
 
