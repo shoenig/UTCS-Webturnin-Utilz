@@ -16,13 +16,14 @@ assi  = 'A' + sys.argv[1]
 print 'File name: ' + fname
 print 'Assignment: ' + assi
 
-rdir = '/v/filer4b/v38q001/sah2659/Dropbox/cs303e_p/'
-dump = rdir + 'moss/mdump/'
+rdir = '/tmp/moss/'
+dump = '/tmp/mdump/'
 
 c = 0
 t = 0
-for num in ('52745', '52750', '52755' , '52759', '52760', '52765', '52766'):
-    cdir = rdir + num + '/' + assi 
+for num in ('52745', '52750', '52755' , '52760', '52765', '52766', '52770'):
+    cdir = rdir + num + '/'
+    print 'cdir: ' + cdir
     for _, dirs, _ in os.walk(cdir):
         for dname in dirs:
             d5dir = cdir + '/' + dname
@@ -38,4 +39,4 @@ for num in ('52745', '52750', '52755' , '52759', '52760', '52765', '52766'):
 
 print ''
 print '%d Students' % t
-print '%d Files Found and moved into dump' % c
+print '%d Files Found' % c

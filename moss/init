@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+# some sort of initializer
+
+import os
+import shutil
+import sys
+
+classes = ('52745', '52750', '52755' , '52760', '52765', '52766', '52770')
+
+def deldir(d):
+    try:
+        shutil.rmtree(d)
+    except:
+        pass
+
+def zipify(cls):
+    return 'CS303E-' + cls + '.GRADER.zip'
+
+if __name__ == '__main__':
+    # check to see if zip files are there (if not, quit)
+    ok = True
+    for cls in classes:
+        name = zipify(cls)
+        if not os.path.exists('/tmp/' + name):
+            print 'File does not exist: ' + name
+            ok = False
+    if not ok:
+        sys.exit(0)
+
+    # delete old /tmp/moss if it's there
+    deldir('/tmp/moss')
+
+    # make it anew and move some files in
+    os.mkdir('/tmp/moss')
+    for cls in classes:
+        d = '/tmp/moss/' + cls
+        os.mkdir(d)
+        target = '/tmp/moss/'+cls+'/'+zipify(cls)
+        shutil.copy2('/tmp/' + zipify(cls), target)
+        os.chdir('/tmp/moss/'+cls+'/')
+        os.system('unzip ' + zipify(cls))
+        os.system('rm *.zip') # delete local zip
+        os.chdir('/tmp/')
+
+    # create the dump that mover will make use of
+    deldir('/tmp/mdump')
+    os.mkdir('/tmp/mdump')
