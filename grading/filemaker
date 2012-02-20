@@ -8,6 +8,7 @@
 import os
 import shutil
 import sys
+import re
 from gutilz import format_record
 
 keeplist = ['EasterSunday.py']
@@ -63,16 +64,29 @@ def push():
                     target = cdir + dname + '/' + item
                     shutil.copy2('./' + item, target)
 
-def pluckid(d, fname):
+def pluckids(d, fname):
+    ids = []
     with open(d+'/'+fname) as pyfile:
         for line in pyfile.readlines():
             line = line.strip()
-            trailer = ''
-            for x in line.split():
-                if 'EID' in trailer:
-                    return x.lower()
-                trailer = x
-    return 'MISSING-EID'
+            eid_pattern = re.compile('EIDS?:?[\s]*([a-zA-Z]+[a-zA-Z0-9]*)[,\s]*([a-zA-Z]+[a-zA-Z0-9])?')
+            m = re.match(eid_pattern, line)
+            if m.group(1):
+                ids.append(m.group(1))
+            if m.group(2):
+                ids.append(m.group(2))
+    return ids
+
+
+def format_ids(eids):
+    if not eids:
+        return 'MISSING-EID'
+    elif len(eids) == 1:
+        return eids[0]
+    elif len(eids) == 2:
+        return eids[0] + ',' + eids[1] # no spaces
+    else:
+        return 'ERROR'
 
 # actually write things to the file
 def writeit(d, files, fgrades):
@@ -82,7 +96,8 @@ def writeit(d, files, fgrades):
         if item not in files:
             missing.append(item)
         elif item.endswith('.py'):
-            eid = pluckid(d, item)
+            eid = pluckids(d, item)
+            eid = format_ids(eid)
     formatted = format_record(str(d)[2:], eid, missing)
     print >>fgrades, formatted
 
