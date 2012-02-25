@@ -11,7 +11,7 @@ import sys
 import re
 from gutilz import format_record
 
-keeplist = ['EasterSunday.py']
+keeplist = ['Guess.py']
 pushlist = []
 
 
@@ -69,12 +69,17 @@ def pluckids(d, fname):
     with open(d+'/'+fname) as pyfile:
         for line in pyfile.readlines():
             line = line.strip()
-            eid_pattern = re.compile('EIDS?:?[\s]*([a-zA-Z]+[a-zA-Z0-9]*)[,\s]*([a-zA-Z]+[a-zA-Z0-9])?')
-            m = re.match(eid_pattern, line)
-            if m.group(1):
-                ids.append(m.group(1))
-            if m.group(2):
-                ids.append(m.group(2))
+            if 'EID' in line:
+
+                eid_pattern = re.compile('[.\W]*[eE][iI][dD]S?:?[\s]*([a-zA-Z]+[a-zA-Z0-9]*)[,\s]*([a-zA-Z]+[a-zA-Z0-9])?[.\W]*')
+                m = re.match(eid_pattern, line)
+                if not m:
+                    continue
+                else:
+                    if m.group(1):
+                        ids.append(m.group(1).lower())
+                    if m.group(2):
+                        ids.append(m.group(2).lower())
     return ids
 
 
