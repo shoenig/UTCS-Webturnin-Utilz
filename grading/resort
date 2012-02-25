@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # sort a grades.txt file either by utied or utcs username
+## ALL THIS CAN BE REPLACED WITH:
+#    cat grades.txt | awk '{print $1, $3}' | sort -k 2
 import sys
 from gutilz import format_record
 from gutilz import join_comment
