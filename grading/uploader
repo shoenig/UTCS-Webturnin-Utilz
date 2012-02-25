@@ -38,9 +38,10 @@ def slurp_grades():
         records = []
         for line in gradesf.readlines():
             sp = line.split()
-            account = sp[1]
+            utcsid = sp[1]
+            eid = sp[2]
             comment = join_comment(sp)
-            records.append( (account, comment) )
+            records.append( (utcsid, eid, comment) )
         return records
 
 
@@ -74,12 +75,13 @@ def upload_comments(u, p, c, a):
 # with utcs-usernames appended to them
 def create_comment_files(assignment):
     for record in slurp_grades():
-        if record[1] in ('',): # skip people with no comments
+        if record[2] in ('',): # skip people with no comments
             continue
         # make utcs-A#.txt file
-        fname = record[0] + '-A' + assignment + '.txt'
+        eid = '???' if record[1] in ('NO-FILE', 'ERROR') else record[1]
+        fname = record[0] + '-' + eid + '-A' + assignment + '.txt'
         with open('/tmp/'+fname, 'w') as tempf:
-            print >>tempf, record[1]
+            print >>tempf, record[2]
 
 if __name__ == '__main__':
     #u, p, c, a = get_login_info()
