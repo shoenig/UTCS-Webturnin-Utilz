@@ -2,11 +2,35 @@
 # upload grades.txt to UTCS Webturnin
 # Seth Hoenig 2012 (seth.a.hoenig@gmail.com)
 
+import getopt
 import os
-import random
-from gutilz import join_comment
+import gutilz
+import sys
 
-url = 'https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/upload'
+# read grades.txt and return a list of records
+# a record is a tuple in the form: (utcsname, comment)
+def slurp_grades():
+    with open('./grades.txt') as gradesf:
+        records = []
+        for line in gradesf.readlines():
+            sp = line.split()
+            utcsid = sp[1]
+            eid = sp[2]
+            comment = gutilz.join_comment(sp)
+            records.append( (utcsid, eid, comment) )
+        return records
+
+# instead of uploading to Webturnin, just create the comment files
+# with utcs-usernames appended to them
+def create_comment_files(assignment):
+    for record in slurp_grades():
+        if record[2] in ('',): # skip people with no comments
+            continue
+        # make utcs-A#.txt file
+        eid = '???' if record[1] in ('NO-FILE', 'ERROR') else record[1]
+        fname = record[0] + '-' + eid + '-A' + assignment + '.txt'
+        with open('/tmp/'+fname, 'w') as tempf:
+            print >>tempf, record[2]
 
 def get_login_info():
     usrnm = raw_input('UTCS Username: ')
@@ -21,30 +45,9 @@ def login(usrnm, passwd):
         '-d \"password=' + passwd + '\" ' + \
         '--insecure ' + \
         '-H "Expect:" ' + \
-        '''"https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/do_login"'''
-
+        '\"' + gutilz.LOGIN_URL + '\"'
     print 'cmd: %s' % cmd
     os.system(cmd)
-
-# return a random happy comment
-# def happy_comment():
-#     phrases = ['Good Job!', 'Excellent Work!', 'Neato!']
-#     return phrases[random.randint(0, len(phrases)-1)]
-
-# read grades.txt and return a list of records
-# a record is a tuple in the form: (utcsname, comment)
-def slurp_grades():
-    with open('./grades.txt') as gradesf:
-        records = []
-        for line in gradesf.readlines():
-            sp = line.split()
-            utcsid = sp[1]
-            eid = sp[2]
-            comment = join_comment(sp)
-            records.append( (utcsid, eid, comment) )
-        return records
-
-
 
 # THIS IS BROKEN :'(
 # Webturnin does not provide any error messages at this point, so I think
@@ -65,27 +68,41 @@ def upload_comments(u, p, c, a):
                 '--insecure ' + \
                 '-H "Expect:" ' + \
                 '-b cookies.txt -c cookies.txt ' + \
-                '--url \"' + url + '\" '
+                '--url \"' + gutilz.URL + '\" '
             print ''
             print ''
             print cmd + '\n'
             os.system(cmd)
 
-# instead of uploading to Webturnin, just create the comment files
-# with utcs-usernames appended to them
-def create_comment_files(assignment):
-    for record in slurp_grades():
-        if record[2] in ('',): # skip people with no comments
-            continue
-        # make utcs-A#.txt file
-        eid = '???' if record[1] in ('NO-FILE', 'ERROR') else record[1]
-        fname = record[0] + '-' + eid + '-A' + assignment + '.txt'
-        with open('/tmp/'+fname, 'w') as tempf:
-            print >>tempf, record[2]
-
 if __name__ == '__main__':
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'uc', ['upload', 'create'])
+    except getopt.GetoptError, err:
+        print str(err)
+        print '-- You\'re using it wrong! --'
+        sys.exit(2)
+    upload = False
+    create = False
+    for o, a in opts:
+        if o in ('-u', '--upload'):
+            upload = True
+        elif o in ('-c', '--create'):
+            create = True
+        else:
+            print 'Unknown Option: %s' % (o,)
+            sys.exit(2)
+
+    if not upload and not create:
+        print 'Must specify at least one of --create, --upload'
+        sys.exit(2)
+
+    if upload:
+        print 'Uploading is currently broken :\'('
+    # do something on upload
     #u, p, c, a = get_login_info()
     #login(u, p)
     #upload_comments(u, p, c, a)
-    assi = raw_input('Assignemnt #: ')
-    create_comment_files(assi)
+
+    if create:
+        assi = raw_input('Assignemnt #: ')
+        create_comment_files(assi)

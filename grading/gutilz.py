@@ -1,5 +1,11 @@
-# Utility class for grading stuff
+# Utility class for grading UTCS stuff
+# Seth Hoenig 2012 (seth.a.hoenig@gmail.com)
 
+import random
+
+BASE_URL = 'https://turnin.microlab.cs.utexas.edu/turnin/webturnin.dll/'
+UP_URL = BASE_URL + 'upload'
+LOGIN_URL = BASE_URL + 'do_login'
 
 # return a random happy comment
 def happy_comment():
