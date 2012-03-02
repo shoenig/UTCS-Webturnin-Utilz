@@ -7,9 +7,8 @@ import os
 import gutilz
 import sys
 
-# read grades.txt and return a list of records
-# a record is a tuple in the form: (utcsname, comment)
 def slurp_grades():
+    """Read 'grades.txt' (hard-coded) and return the list of records."""
     with open('./grades.txt') as gradesf:
         records = []
         for line in gradesf.readlines():
@@ -20,9 +19,8 @@ def slurp_grades():
             records.append( (utcsid, eid, comment) )
         return records
 
-# instead of uploading to Webturnin, just create the comment files
-# with utcs-usernames appended to them
 def create_comment_files(assignment):
+    """Create the comment files with UTCS username prepended"""
     for record in slurp_grades():
         if record[2] in ('',): # skip people with no comments
             continue
@@ -33,6 +31,7 @@ def create_comment_files(assignment):
             print >>tempf, record[2]
 
 def get_login_info():
+    """Ask for and return a tuple of login information"""
     usrnm = raw_input('UTCS Username: ')
     passwd = raw_input('UTCS Password: ')
     course = raw_input('Course: ')
@@ -40,13 +39,13 @@ def get_login_info():
     return (usrnm, passwd, course, assin)
 
 def login(usrnm, passwd):
+    """Login to UTCS Webturnin. This will create cookie.txt for later use."""
     cmd = 'curl -c cookies.txt ' + \
         '-d \"username=' + usrnm + '\" ' + \
         '-d \"password=' + passwd + '\" ' + \
         '--insecure ' + \
         '-H "Expect:" ' + \
         '\"' + gutilz.LOGIN_URL + '\"'
-    print 'cmd: %s' % cmd
     os.system(cmd)
 
 # THIS IS BROKEN :'(
@@ -54,6 +53,7 @@ def login(usrnm, passwd):
 # the files are technically getting uploaded, but not into the actual
 # user directories
 def upload_comments(u, p, c, a):
+    """Upload comments to UTCS Webturnin"""
     for record in slurp_grades():
         if record[1] in ('',): # skip people with no comments
             continue

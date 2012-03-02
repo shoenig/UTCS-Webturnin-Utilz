@@ -4,6 +4,8 @@
 #      grade/20  --utcsname----- Comments
 # and can be uploaded to UTCS Webturnin using uploader.py
 # Seth Hoenig 2012 (seth.a.hoenig@gmail.com)
+# ---usage example (sitting in directory 52750)
+#    $THEPATH/filemaker 52750 seth
 
 import os
 import shutil
@@ -14,11 +16,8 @@ from gutilz import format_record
 keeplist = ['Guess.py']
 pushlist = []
 
-
-# Walk into directories in filesystem
-# Ripped from os module and slightly modified
-# for alphabetical sorting
 def sortedWalk(top, topdown=True, onerror=None):
+    """Walk directories in filesystem in ALPHEBETICAL ORDER IMAGINE THAT."""
     from os.path import join, isdir
 
     names = os.listdir(top)
@@ -41,11 +40,8 @@ def sortedWalk(top, topdown=True, onerror=None):
     if not topdown:
         yield top, dirs, nondirs
 
-
-# delete everything except files listed in keeplist, so it's easier to
-# see what we care about in the directory. keep in mind, files turned in
-# with the wrong name will be deleted (just locally, of course)
 def purge():
+    """Delete files that are not in the keeplist."""
     for d, _, files in os.walk('./'):
         odir = d
         for f in files:
@@ -53,9 +49,8 @@ def purge():
                 if(odir is not './'):
                     os.remove(odir + '/' + f)
 
-# create a copy of each file in pushlist in each students directory
-# for example, a common test case file, or data file
 def push():
+    """Create a copy of every file in the pushlist in every directory."""
     if len(pushlist) > 0:
         cdir = './'
         for _, dirs, _ in os.walk(cdir):
@@ -65,6 +60,7 @@ def push():
                     shutil.copy2('./' + item, target)
 
 def pluckids(d, fname):
+    """Pluck EID values out of the file. Multiple ID's supported."""
     ids = []
     with open(d+'/'+fname) as pyfile:
         for line in pyfile.readlines():
@@ -82,8 +78,8 @@ def pluckids(d, fname):
                         ids.append(m.group(2).lower())
     return ids
 
-
 def format_ids(eids):
+    """Format any ID's found or provide an error message."""
     if not eids:
         return 'MISSING-EID'
     elif len(eids) == 1:
@@ -93,8 +89,8 @@ def format_ids(eids):
     else:
         return 'ERROR'
 
-# actually write things to the file
 def writeit(d, files, fgrades):
+    """Write a record to file."""
     missing = []
     eid = 'NO-FILE'
     for item in keeplist:
@@ -107,11 +103,14 @@ def writeit(d, files, fgrades):
     print >>fgrades, formatted
 
 
-# grab all the user names from the folders, and put them in a text file
-# with other info. if the user does not have one or more of the files
-# in the keeplist, give them a grade of 0 (this will show up in the
-# grade/comment file)
+
 def setup_grade_file(splitDirectory, grader, wantedList=None):
+    """
+    Grab all the user names from the folders, and put them in a text file
+    with other info. if the user does not have one or more of the files
+    in the keeplist, give them a grade of 0 (this will show up in the
+    grade/comment file.)
+    """
     with open('./grades.txt', 'w') as fgrades:
         for d, _, files in sortedWalk('./'):
             if d is not './':
@@ -127,8 +126,6 @@ def setup_grade_file(splitDirectory, grader, wantedList=None):
                 else:
                     writeit(d, files, fgrades)
                 
-
-# program begins here
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         print 'usage: filemaker <classno> <gradername>'
@@ -145,5 +142,3 @@ if __name__ == '__main__':
     setup_grade_file(split, sys.argv[2])
 
 
-# usage example (sitting in directory 52750)
-#  filemaker 52750 seth
