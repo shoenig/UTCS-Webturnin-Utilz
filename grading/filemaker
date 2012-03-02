@@ -65,17 +65,15 @@ def pluckids(d, fname):
     with open(d+'/'+fname) as pyfile:
         for line in pyfile.readlines():
             line = line.strip()
-            if 'EID' in line:
-
-                eid_pattern = re.compile('[.\W]*[eE][iI][dD]S?:?[\s]*([a-zA-Z]+[a-zA-Z0-9]*)[,\s]*([a-zA-Z]+[a-zA-Z0-9])?[.\W]*')
-                m = re.match(eid_pattern, line)
-                if not m:
-                    continue
-                else:
-                    if m.group(1):
-                        ids.append(m.group(1).lower())
-                    if m.group(2):
-                        ids.append(m.group(2).lower())
+            eid_pattern = re.compile('[.\W]*[eE][iI][dD][sS]?:?[\s]*([a-zA-Z]+[\w]*)[,\s]*([a-zA-Z]+[\w])?[.\W]*')
+            m = re.match(eid_pattern, line)
+            if not m:
+                continue
+            else:
+                if m.group(1):
+                    ids.append(m.group(1).lower())
+                if m.group(2):
+                    ids.append(m.group(2).lower())
     return ids
 
 def format_ids(eids):
