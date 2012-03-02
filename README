@@ -1,0 +1,32 @@
+UTCS-Webturnin-Utilz
+Seth Hoenig 2012 (seth.a.hoenig@gmail.com)
+
+A collection of utilities to make grading projects less dreadful.
+There are two categories: stuff for running batches of files against
+MOSS, and stuff for grading projects.
+
+moss/
+    init - Sets up files and folders in /tmp for use with
+        the other two scripts. It is expected that the zip files
+        containing all students code are located in /tmp when this is
+        run. (ex: CS303E-527xx.zip)
+    mover - Moves all .py files from different sections into the
+        /tmp/mdump directory, first prepending the student's utcs
+        username to the file.
+    mossnet - Submission script that takes all the files in /tmp/mdump
+        and submits them to MOSS for review.
+
+
+grading/
+    filemaker - Creates a grades.txt file which can be used for keeping
+        track of scores and comments.
+    comments - Creates and/or uploads comments from a given grades.txt
+        file.
+    gutilz.py - Contains some utility functions shared among scripts.
+    resort - Takes a grades.txt file and resorts the records by either
+        utcs account name or eid. This is to work around the fact that
+        blackboard sorts only by uteid and webturnin sorts only by
+        utcs account name.
+
+
+    
