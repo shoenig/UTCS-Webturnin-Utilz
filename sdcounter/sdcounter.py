@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Seth Hoenig 2012 (seth.a.hoenig@gmail.com)
+
 import datetime
 import os
 import subprocess
