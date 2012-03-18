@@ -108,8 +108,10 @@ def process_student_list(course, studs, asmnts):
     for stud in [y for y in studs]:
         shtml = get_student_html(course, stud[0])
         r = process_student(shtml, asmnts)
+        total = sum(r.values())
 #TODO: pretty format name
-        print '%s %s' % (stud[0] + '-'*(14-len(stud[0])), stud[1])
+        print '[%d] %s %s %s' % (total, ' '*(abs(3-len(str(total)))), \
+                                     stud[0] + '-'*(14-len(stud[0])), stud[1])
         for item in r:
             print '\t\t\t%s: %r' % (item, r[item])
 
