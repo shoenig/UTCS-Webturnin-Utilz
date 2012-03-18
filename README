@@ -29,4 +29,10 @@ grading/
         utcs account name.
 
 
-    
+sdcounter/
+    assignments.py - A python file with just a dict defined with each
+        assignment name and corresponding due date.
+    sdcounter.py - The script that actually caclulates and displays the
+        total number of slipdays each student has used.
+    test_sdcounter.py - Unit tests for sdcounter.py.
+    *.html - Various html files for the unit tests.
