@@ -12,6 +12,8 @@ def slurp_grades():
     with open('./grades.txt') as gradesf:
         records = []
         for line in gradesf.readlines():
+            if len(line.strip()) == 0:
+                continue
             sp = line.split()
             utcsid = sp[1]
             eid = sp[2]
