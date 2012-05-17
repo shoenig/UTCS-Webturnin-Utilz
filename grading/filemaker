@@ -13,8 +13,8 @@ import sys
 import re
 from gutilz import format_record
 
-keeplist = ['Guess.py']
-pushlist = []
+keeplist = ['ISBN.py']
+pushlist = ['key.txt', 'isbn.txt']
 
 def sortedWalk(top, topdown=True, onerror=None):
     """Walk directories in filesystem in ALPHEBETICAL ORDER IMAGINE THAT."""
