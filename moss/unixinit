@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
+'''
+ Seth Hoenig 2012
+
+ For submitting files to moss, from the unix turnin system
+
+ Assumption: Unix style file system
+ Assumption: run this program such that the current directory
+ is the root of all the student directories
+
+ For example, the output of `tree` might produce:
+ .
+ |── ahmad
+ |   └── proj1_mak2565
+ |       ├── controller
+ |       ├── controller.c
+ |       ├── README
+ |       ├── worker
+ |       └── worker.c
+ |── am43299
+ |   └── proj1_am43299
+ |       ├── controller.c
+ |       ├── README.txt
+ |       └── worker.c
+ .... etc .....
+'''
+
+import os
+import shutil
+import sys
+
+MOSS_DUMP = '/tmp/moss'
+
+def deldir(directortree):
+    try:
+        shutil.rmtree(directortree)
+    except:
+        pass
+
+def populate_dump(students_root_directory, wanted_files):
+    ''' Do our best to find some files, and a [unique] uteid
+    or a utcs name to go with them. The tricky part is this:
+    we want to account for the case where some students turn
+    things into the top level directory, as well as those who
+    turn files into a child directory. The top level directory
+    is guarenteed to be named their utcs name.
+    '''
+    for root, dirs, files in os.walk(students_root_directory):
+        localdir = root[len(students_root_directory)+1:]
+        utcsname = localdir.split('/')[0]
+        for wf in wanted_files:
+            if wf in files:
+                full_orig_name = root + '/' + wf
+                full_new_name = MOSS_DUMP + '/' + utcsname + '-' + wf
+                shutil.copy2(full_orig_name, full_new_name)
+
+
+if __name__ == '__main__':
+
+    if len(sys.argv) < 2:
+        print >>sys.stderr, 'Usage: %s [file, ]' % sys.argv[0]
+        sys.exit(1)
+
+    wanted_files = sys.argv[1:]
+
+    deldir(MOSS_DUMP)    # delete old /tmp/moss if it exists
+    os.mkdir(MOSS_DUMP)  # fresh directory
+
+    print 'Gathering File[s]:' # sanity check, show what shall be gathered
+    for f in wanted_files:
+        print '\t%s' % f
+
+    populate_dump(os.getcwd(), wanted_files)
+
+    
