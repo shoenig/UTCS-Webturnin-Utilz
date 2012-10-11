@@ -4,7 +4,14 @@
 '''
  Seth Hoenig 2012
 
- For submitting files to moss, from the unix turnin system
+ For collecting files to submit to moss, from the unix turnin system
+ Preappends the utcs username to each of the wanted files, and moves them
+ into a common directory.
+
+ Use the mossnet script to actually submit the files
+ Example: ~/bin/mossnet -l c -x -m 10000 ./*.c
+ This sets the language to c, enables experimental features, allows 10000 matches, and
+ submits all files in the current directory that end in .c
 
  Assumption: Unix style file system
  Assumption: run this program such that the current directory
